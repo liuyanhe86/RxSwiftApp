@@ -67,22 +67,7 @@ class MyTableViewController: UIViewController, UITableViewDelegate {
             .bind(to: tableHeader.rx.text)
             .disposed(by: disposeBag)
         viewModel.items.bind(to: tableView.rx.items(cellIdentifier: "MyCell")) { (index, item: MyModel, cell: MyTableViewCell) in
-            cell.indexPath = IndexPath(row: index, section: 0)
-            cell.disposables = CompositeDisposable()
-            let nameDisposable = item.name
-                                    .map {"Item: \($0)"}
-                                    .bind(to: cell.nameLabel.rx.text)
-            let valueDisposable = item.value
-                                    .map {"Value: \($0)"}
-                                    .bind(to: cell.valueLabel.rx.text)
-            let increaseDisposable = cell.rx.increaseBtnTap
-                .bind(to: self.viewModel.increaseValue)
-            let selectDisposable = cell.rx.selectBtnTap
-                .bind(to: self.viewModel.selectItem)
-            _ = cell.disposables?.insert(nameDisposable)
-            _ = cell.disposables?.insert(valueDisposable)
-            _ = cell.disposables?.insert(increaseDisposable)
-            _ = cell.disposables?.insert(selectDisposable)
+            cell.configure(at: index, with: item, viewModel: self.viewModel)
             
         }.disposed(by: disposeBag)
         

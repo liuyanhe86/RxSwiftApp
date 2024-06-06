@@ -13,8 +13,8 @@ class MyViewModel: NSObject {
     var items: BehaviorRelay<[MyModel]>
     let addItem = PublishSubject<Void>()
     let removeItem = PublishSubject<IndexPath>()
-    let increaseValue = PublishSubject<IndexPath>()
-    let selectItem = PublishSubject<IndexPath>()
+    let increaseValue = PublishSubject<MyModel>()
+    let selectItem = PublishSubject<MyModel>()
     let disposeBag = DisposeBag()
     
     init(numOfItems: Int) {
@@ -35,13 +35,13 @@ class MyViewModel: NSObject {
             self.items.accept(currentItems)
         }).disposed(by: disposeBag)
         
-        increaseValue.subscribe(onNext: { indexPath in
-            let value = self.items.value[indexPath.row].value.value
-            self.items.value[indexPath.row].value.accept(value + 1)
+        increaseValue.subscribe(onNext: { item in
+            let value = item.value.value
+            item.value.accept(value + 1)
         }).disposed(by: disposeBag)
         
-        selectItem.subscribe(onNext: { indexPath in
-            self.tableTitle.accept("Select Item: #\(self.items.value[indexPath.row].name.value)")
+        selectItem.subscribe(onNext: { item in
+            self.tableTitle.accept("Select Item: #\(item.name.value)")
         }).disposed(by: disposeBag)
         
         removeItem.subscribe(onNext: {indexPath in

@@ -10,25 +10,6 @@ import RxSwift
 import RxCocoa
 import SnapKit
 
-extension Reactive where Base: MyTableViewCell {
-    
-    var increaseBtnTap: ControlEvent<IndexPath> {
-        let source = base.increaseBtn.rx.tap
-            .compactMap { [weak base] in
-                base?.indexPath
-            }
-        return ControlEvent(events: source)
-    }
-    
-    var selectBtnTap: ControlEvent<IndexPath> {
-        let source = base.selectBtn.rx.tap
-            .compactMap { [weak base] in
-                base?.indexPath
-            }
-        return ControlEvent(events: source)
-    }
-}
-
 class MyTableViewCell: UITableViewCell {
     let nameLabel: UILabel = UILabel()
     let valueLabel: UILabel = UILabel()
@@ -36,7 +17,7 @@ class MyTableViewCell: UITableViewCell {
     let selectBtn: UIButton = UIButton(type: .custom)
     
     var disposables: CompositeDisposable?
-    var indexPath: IndexPath?
+    var index: Int?
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -80,9 +61,40 @@ class MyTableViewCell: UITableViewCell {
             make.height.equalTo(30)
         }
     }
+        
+    func configure(at row: Int, with item: MyModel, viewModel: MyViewModel) {
+        index = row
+        disposables = CompositeDisposable()
+        
+        _ = disposables?.insert(
+            item.name
+            .map { "Item: \($0)" }
+            .bind(to: nameLabel.rx.text)
+        )
+       
+        _ = disposables?.insert(
+            item.value
+                .map { "Value: \($0)" }
+                .bind(to: valueLabel.rx.text)
+        )
+        
+        _ = disposables?.insert(
+            increaseBtn.rx.tap
+                .bind {
+                    viewModel.increaseValue.onNext(item)
+                }
+        )
+        
+        _ = disposables?.insert(
+            selectBtn.rx.tap
+                .bind {
+                    viewModel.selectItem.onNext(item)
+                }
+        )
+    }
     
     override func prepareForReuse() {
-        print("prepare to reuse: \(indexPath?.row ?? -1)")
+        print("prepare to reuse: \(index ?? -1)")
         disposables?.dispose()
     }
     
