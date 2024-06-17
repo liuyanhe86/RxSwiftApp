@@ -68,7 +68,6 @@ class MyTableViewController: UIViewController, UITableViewDelegate {
             .disposed(by: disposeBag)
         viewModel.items.bind(to: tableView.rx.items(cellIdentifier: "MyCell")) { (index, item: MyModel, cell: MyTableViewCell) in
             cell.configure(at: index, with: item, viewModel: self.viewModel)
-            
         }.disposed(by: disposeBag)
         
         addBtn.rx.tap

@@ -81,14 +81,14 @@ class MyTableViewCell: UITableViewCell {
         _ = disposables?.insert(
             increaseBtn.rx.tap
                 .bind {
-                    viewModel.increaseValue.onNext(item)
+                    viewModel.increaseValue.accept(item)
                 }
         )
         
         _ = disposables?.insert(
             selectBtn.rx.tap
                 .bind {
-                    viewModel.selectItem.onNext(item)
+                    viewModel.selectItem.accept(item)
                 }
         )
     }

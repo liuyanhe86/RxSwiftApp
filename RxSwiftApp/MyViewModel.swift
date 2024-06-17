@@ -11,10 +11,10 @@ import RxCocoa
 class MyViewModel: NSObject {
     var tableTitle: BehaviorRelay<String>
     var items: BehaviorRelay<[MyModel]>
-    let addItem = PublishSubject<Void>()
-    let removeItem = PublishSubject<IndexPath>()
-    let increaseValue = PublishSubject<MyModel>()
-    let selectItem = PublishSubject<MyModel>()
+    let addItem = PublishRelay<Void>()
+    let removeItem = PublishRelay<IndexPath>()
+    let increaseValue = PublishRelay<MyModel>()
+    let selectItem = PublishRelay<MyModel>()
     let disposeBag = DisposeBag()
     
     init(numOfItems: Int) {
